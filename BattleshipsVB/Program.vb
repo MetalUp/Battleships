@@ -1,6 +1,6 @@
 Imports System.IO
 
-Module Program
+Class Program
     Public Structure ShipType
         Public Name As String
         Public Size As Integer
@@ -8,24 +8,27 @@ Module Program
 
     Const TrainingGame As String = "Training.txt"
 
-    Sub GetRowColumn(ByRef Row As Integer, ByRef Column As Integer)
+    Private Shared Sub GetRowColumn(ByRef Row As Integer, ByRef Column As Integer)
         Console.WriteLine()
         Console.Write("Please enter column: ")
-        Column = Convert.ToInt32(Console.ReadLine())
-        Dim isValidRow As Boolean = False
-
-        While isValidRow
-            Row = Convert.ToInt32(Console.ReadLine())
-
-            If Row > 9 OrElse Row < 0 Then
-                Console.Write("Invalid value entered")
-            Else
-                isValidRow = True
-            End If
-        End While
+        Column = GetRowOrColumnNumber()
+        Console.Write("Please enter row: ")
+        Row = GetRowOrColumnNumber()
     End Sub
 
-    Sub MakePlayerMove(ByVal Board As Char(,), ByVal Ships As ShipType())
+    Private Shared Function GetRowOrColumnNumber() As Integer
+        While True
+            Dim num = Convert.ToInt32(Console.ReadLine())
+
+            If num > 9 OrElse num < 0 Then
+                Console.Write("Invalid value entered")
+            Else
+                Return num
+            End If
+        End While
+    End Function
+
+    Private Shared Sub MakePlayerMove(ByVal Board As Char(,), ByVal Ships As ShipType())
         Dim Row As Integer = 0
         Dim Column As Integer = 0
         GetRowColumn(Row, Column)
@@ -41,7 +44,7 @@ Module Program
         End If
     End Sub
 
-    Sub SetUpBoard(ByVal Board As Char(,))
+    Private Shared Sub SetUpBoard(ByVal Board As Char(,))
         For Row As Integer = 0 To 10 - 1
 
             For Column As Integer = 0 To 10 - 1
@@ -50,7 +53,7 @@ Module Program
         Next
     End Sub
 
-    Sub LoadGame(ByVal TrainingGame As String, ByVal Board As Char(,))
+    Private Shared Sub LoadGame(ByVal TrainingGame As String, ByVal Board As Char(,))
         Dim Line As String = ""
         Dim BoardFile = OpenFile(TrainingGame)
 
@@ -65,7 +68,7 @@ Module Program
         BoardFile.Close()
     End Sub
 
-    Sub PlaceRandomShips(ByVal Board As Char(,), ByVal Ships As ShipType())
+    Private Shared Sub PlaceRandomShips(ByVal Board As Char(,), ByVal Ships As ShipType())
         Dim RandomNumber As Random = New Random()
         Dim Valid As Boolean
         Dim Orientation As Char = " "c
@@ -95,7 +98,7 @@ Module Program
         Next
     End Sub
 
-    Sub PlaceShip(ByVal Board As Char(,), ByVal Ship As ShipType, ByVal Row As Integer, ByVal Column As Integer, ByVal Orientation As Char)
+    Private Shared Sub PlaceShip(ByVal Board As Char(,), ByVal Ship As ShipType, ByVal Row As Integer, ByVal Column As Integer, ByVal Orientation As Char)
         If Orientation = "v"c Then
 
             For Scan As Integer = 0 To Ship.Size - 1
@@ -109,7 +112,7 @@ Module Program
         End If
     End Sub
 
-    Function ValidateBoatPosition(ByVal Board As Char(,), ByVal Ship As ShipType, ByVal Row As Integer, ByVal Column As Integer, ByVal Orientation As Char) As Boolean
+    Private Shared Function ValidateBoatPosition(ByVal Board As Char(,), ByVal Ship As ShipType, ByVal Row As Integer, ByVal Column As Integer, ByVal Orientation As Char) As Boolean
         If Not WouldFitWithinBoard(Ship, Row, Column, Orientation) Then
             Return False
         Else
@@ -136,7 +139,7 @@ Module Program
         Return True
     End Function
 
-    Function WouldFitWithinBoard(ByVal Ship As ShipType, ByVal Row As Integer, ByVal Column As Integer, ByVal Orientation As Char) As Boolean
+    Private Shared Function WouldFitWithinBoard(ByVal Ship As ShipType, ByVal Row As Integer, ByVal Column As Integer, ByVal Orientation As Char) As Boolean
         If Orientation = "v"c AndAlso Row + Ship.Size > 10 Then
             Return False
         ElseIf Orientation = "h"c AndAlso Column + Ship.Size > 10 Then
@@ -146,7 +149,7 @@ Module Program
         End If
     End Function
 
-    Function CheckWin(ByVal Board As Char(,)) As Boolean
+    Private Shared Function CheckWin(ByVal Board As Char(,)) As Boolean
         For Row As Integer = 0 To 10 - 1
 
             For Column As Integer = 0 To 10 - 1
@@ -160,7 +163,7 @@ Module Program
         Return True
     End Function
 
-    Sub PrintBoard(ByVal Board As Char(,))
+    Private Shared Sub PrintBoard(ByVal Board As Char(,))
         Console.WriteLine()
         Console.WriteLine("The board looks like this: ")
         Console.WriteLine()
@@ -194,7 +197,7 @@ Module Program
         Next
     End Sub
 
-    Sub DisplayMenu()
+    Private Shared Sub DisplayMenu()
         Console.WriteLine("MAIN MENU")
         Console.WriteLine("")
         Console.WriteLine("1. Start new game")
@@ -203,7 +206,7 @@ Module Program
         Console.WriteLine()
     End Sub
 
-    Function GetMainMenuChoice() As Integer
+    Private Shared Function GetMainMenuChoice() As Integer
         Dim Choice As Integer = 0
         Console.Write("Please enter your choice: ")
         Choice = Convert.ToInt32(Console.ReadLine())
@@ -211,7 +214,7 @@ Module Program
         Return Choice
     End Function
 
-    Sub PlayGame(ByVal Board As Char(,), ByVal Ships As ShipType())
+    Private Shared Sub PlayGame(ByVal Board As Char(,), ByVal Ships As ShipType())
         Dim GameWon As Boolean = False
 
         While GameWon = False
@@ -226,7 +229,7 @@ Module Program
         End While
     End Sub
 
-    Sub SetUpShips(ByVal Ships As ShipType())
+    Private Shared Sub SetUpShips(ByVal Ships As ShipType())
         Ships(0).Name = "Aircraft Carrier"
         Ships(0).Size = 5
         Ships(1).Name = "Battleship"
@@ -239,11 +242,11 @@ Module Program
         Ships(4).Size = 2
     End Sub
 
-    Function OpenFile(ByVal fileName As String, ByVal Optional path As String = "") As StreamReader
+    Private Shared Function OpenFile(ByVal fileName As String, ByVal Optional path As String = "") As StreamReader
         Return New StreamReader(path & fileName)
     End Function
 
-    Sub Main()
+    Shared Sub Main()
         Dim Ships As ShipType() = New ShipType(4) {}
         Dim Board As Char(,) = New Char(9, 9) {}
         Dim MenuOption As Integer = 0
@@ -265,4 +268,4 @@ Module Program
             End If
         End While
     End Sub
-End Module
+End Class

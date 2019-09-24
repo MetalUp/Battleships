@@ -4,6 +4,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>BattleshipsVB</RootNamespace>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <StartupObject>BattleshipsVB.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
